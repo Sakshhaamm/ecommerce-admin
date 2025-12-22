@@ -2,56 +2,41 @@ import { NextResponse } from "next/server";
 import connectDB from "../../lib/db";
 import Product from "../../lib/model/product";
 
-// 1. GET Request - Fetches from Database
+// 1. GET Request
 export async function GET() {
-  await connectDB(); // Connect to the pantry
-  const products = await Product.find({}); // Get everything
+  await connectDB();
+  const products = await Product.find({});
   return NextResponse.json(products);
 }
 
-// 2. POST Request - Saves to Database
+// 2. POST Request (Create)
 export async function POST(request: Request) {
-  await connectDB(); // Connect to the pantry
-  const body = await request.json();
-  
-  // Create a new product in the database
-  const newProduct = await Product.create(body);
-  
-  return NextResponse.json({ 
-    success: true, 
-    product: newProduct 
-  });
-}
-// 3. DELETE Request - Removes a product by ID
-export async function DELETE(request: Request) {
   await connectDB();
-  
-  // Get the ID from the URL (e.g., /api/products?id=12345)
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id");
-
-  if (!id) return NextResponse.json({ error: "ID required" }, { status: 400 });
-
-  // Delete from MongoDB
-  await Product.findByIdAndDelete(id);
-
-  return NextResponse.json({ success: true });
+  const body = await request.json();
+  const product = await Product.create(body);
+  return NextResponse.json({ success: true, product }, { status: 201 });
 }
-// 4. PUT Request - Updates a product
-// 4. PUT Request - Updates a product
+
+// 3. PUT Request (Update)
 export async function PUT(request: Request) {
   await connectDB();
-
   const body = await request.json();
-  // BUG FIX: We added 'imageUrl' to this list so the backend sees it!
-  const { _id, name, price, imageUrl } = body; 
+  const { _id, name, price, quantity, category, imageUrl } = body;
 
-  // Find by ID and update with new name, price, AND IMAGE
   const updatedProduct = await Product.findByIdAndUpdate(
     _id,
-    { name, price, imageUrl }, // <--- Updated to include imageUrl
-    { new: true } 
+    { name, price, quantity, category, imageUrl },
+    { new: true }
   );
 
   return NextResponse.json({ success: true, product: updatedProduct });
+}
+
+// 4. DELETE Request
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+  await connectDB();
+  await Product.findByIdAndDelete(id);
+  return NextResponse.json({ success: true });
 }
