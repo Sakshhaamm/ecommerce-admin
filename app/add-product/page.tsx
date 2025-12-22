@@ -17,7 +17,7 @@ export default function AddProductPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [category, setCategory] = useState("General"); // Default category
+  const [category, setCategory] = useState("General"); 
   const [imageUrl, setImageUrl] = useState("");
   
   const [errors, setErrors] = useState<{name?: string; price?: string; quantity?: string}>({});
@@ -51,14 +51,15 @@ export default function AddProductPage() {
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
-      <h1 className="text-2xl font-bold mb-6 text-slate-800">Add New Product</h1>
+    <div className="max-w-lg mx-auto bg-white dark:bg-slate-800 p-8 rounded-lg shadow-md mt-10 transition-colors">
+      <h1 className="text-2xl font-bold mb-6 text-slate-800 dark:text-white">Add New Product</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         
+        {/* Image Upload */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-slate-700 mb-2">Image</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Image</label>
           {imageUrl ? (
-            <div className="relative w-full h-48 bg-slate-100 rounded border overflow-hidden">
+            <div className="relative w-full h-48 bg-slate-100 dark:bg-slate-700 rounded border border-slate-300 dark:border-slate-600 overflow-hidden">
                <img src={imageUrl} alt="Preview" className="w-full h-full object-contain" />
                <button type="button" onClick={() => setImageUrl("")} className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">Remove</button>
             </div>
@@ -68,18 +69,22 @@ export default function AddProductPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700">Product Name</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-2 border rounded" />
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Product Name</label>
+          <input 
+            type="text" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)} 
+            className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+          />
           {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
         </div>
 
-        {/* Category Selection */}
         <div>
-          <label className="block text-sm font-medium text-slate-700">Category</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Category</label>
           <select 
             value={category} 
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full p-2 border rounded bg-white"
+            className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
           >
             <option value="General">General</option>
             <option value="Electronics">Electronics</option>
@@ -91,14 +96,24 @@ export default function AddProductPage() {
 
         <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700">Price ($)</label>
-              <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full p-2 border rounded" />
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Price ($)</label>
+              <input 
+                type="number" 
+                value={price} 
+                onChange={(e) => setPrice(e.target.value)} 
+                className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+              />
               {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700">Quantity</label>
-              <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="w-full p-2 border rounded" />
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Quantity</label>
+              <input 
+                type="number" 
+                value={quantity} 
+                onChange={(e) => setQuantity(e.target.value)} 
+                className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+              />
               {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity}</p>}
             </div>
         </div>

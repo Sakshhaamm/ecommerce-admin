@@ -1,42 +1,41 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
+import { Inter } from "next/font/google";
+import { Providers } from "./providers"; // Import the provider
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Ecommerce Admin",
-  description: "Admin Dashboard",
+export const metadata = {
+  title: "Admin Dashboard",
+  description: "E-Commerce Admin Panel",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <div className="flex h-screen bg-slate-100">
-          
-          {/* SHARED SIDEBAR - Visible on every page */}
-          <aside className="w-64 bg-slate-900 text-white p-5 flex flex-col">
-            <h2 className="text-2xl font-bold mb-10 text-center">AdminPanel</h2>
-            <nav className="flex-1">
-              <ul className="space-y-4">
-                <li><a href="/" className="block hover:text-blue-400 p-2">Dashboard</a></li>
-                <li><a href="/products" className="block hover:text-blue-400 p-2">Products</a></li>
-                <li><a href="/add-product" className="block hover:text-blue-400 p-2">Add Product</a></li>
-              </ul>
-            </nav>
-          </aside>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-gray-50 dark:bg-slate-900 text-slate-900 dark:text-gray-100 transition-colors duration-300`}>
+        <Providers>
+          {/* We add a simple layout wrapper here */}
+          <div className="min-h-screen flex flex-col md:flex-row">
+            {/* Sidebar (Simple placeholder if you don't have a separate file) */}
+            <aside className="w-full md:w-64 bg-slate-800 text-white p-6 md:min-h-screen flex-shrink-0">
+               <h1 className="text-2xl font-bold mb-8">AdminPanel</h1>
+               <nav className="space-y-4">
+                 <a href="/" className="block py-2 hover:text-blue-400">Dashboard</a>
+                 <a href="/products" className="block py-2 hover:text-blue-400">Inventory</a>
+                 <a href="/add-product" className="block py-2 hover:text-blue-400">Add Product</a>
+               </nav>
+            </aside>
 
-          {/* MAIN CONTENT AREA - This is where 'page.tsx' content will appear */}
-          <main className="flex-1 p-10 overflow-y-auto">
-            {children}
-          </main>
-
-        </div>
+            {/* Main Content Area */}
+            <main className="flex-1 p-6 md:p-10 overflow-y-auto">
+               {children}
+            </main>
+          </div>
+        </Providers>
       </body>
     </html>
   );
