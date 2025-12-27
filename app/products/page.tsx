@@ -7,7 +7,6 @@ export default function InventoryPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 1. Fetch data from the browser (Avoids server crash)
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -24,14 +23,11 @@ export default function InventoryPage() {
     }
   };
 
-  // 2. Delete Functionality
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
-
     try {
       const res = await fetch(`/api/products?id=${id}`, { method: "DELETE" });
       if (res.ok) {
-        // Remove from list immediately
         setProducts(products.filter((p: any) => p._id !== id));
       } else {
         alert("Failed to delete");
@@ -80,14 +76,13 @@ export default function InventoryPage() {
                   </span>
                 </td>
                 <td className="p-4 flex gap-3">
-                  {/* EDIT BUTTON */}
+                  {/* FIXED LINK: Points to your actual folder 'edit-product' */}
                   <Link 
-                    href={`/products/edit/${product._id}`} 
+                    href={`/edit-product/${product._id}`} 
                     className="text-blue-500 hover:text-blue-700 font-medium"
                   >
                     Edit
                   </Link>
-                  {/* DELETE BUTTON */}
                   <button 
                     onClick={() => handleDelete(product._id)}
                     className="text-red-500 hover:text-red-700 font-medium"

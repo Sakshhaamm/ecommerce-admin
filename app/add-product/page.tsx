@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import ImageUpload from "../components/ImageUpload";
+import ImageUpload from "../components/ImageUpload"; // Make sure this path is correct for your project!
 
+// 1. Updated Schema to match Database fields (image instead of imageUrl)
 const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
   price: z.coerce.number().gt(0, "Price must be > 0"),
   quantity: z.coerce.number().int().min(0, "Quantity cannot be negative"),
   category: z.string().min(1, "Category is required"),
-  imageUrl: z.string().optional(),
+  image: z.string().optional(), // Renamed from imageUrl to match DB
 });
 
 export default function AddProductPage() {
@@ -18,14 +19,16 @@ export default function AddProductPage() {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [category, setCategory] = useState("General"); 
-  const [imageUrl, setImageUrl] = useState("");
+  const [image, setImage] = useState(""); // Renamed state to match DB
   
   const [errors, setErrors] = useState<{name?: string; price?: string; quantity?: string}>({});
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const validation = productSchema.safeParse({ name, price, quantity, category, imageUrl });
+    
+    // Validate
+    const validation = productSchema.safeParse({ name, price, quantity, category, image });
 
     if (!validation.success) {
       const fieldErrors = validation.error.flatten().fieldErrors;
@@ -37,7 +40,9 @@ export default function AddProductPage() {
       return;
     }
 
-    const res = await fetch("http://localhost:3000/api/products", {
+    // 2. FIXED FETCH: Removed "http://localhost:3000"
+    // Using relative path "/api/products" works automatically on both Localhost AND Vercel
+    const res = await fetch("/api/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(validation.data),
@@ -47,6 +52,8 @@ export default function AddProductPage() {
       alert("Product Created!");
       router.push("/products");
       router.refresh();
+    } else {
+      alert("Error saving product");
     }
   };
 
@@ -58,13 +65,14 @@ export default function AddProductPage() {
         {/* Image Upload */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Image</label>
-          {imageUrl ? (
+          {image ? (
             <div className="relative w-full h-48 bg-slate-100 dark:bg-slate-700 rounded border border-slate-300 dark:border-slate-600 overflow-hidden">
-               <img src={imageUrl} alt="Preview" className="w-full h-full object-contain" />
-               <button type="button" onClick={() => setImageUrl("")} className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">Remove</button>
+               <img src={image} alt="Preview" className="w-full h-full object-contain" />
+               <button type="button" onClick={() => setImage("")} className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">Remove</button>
             </div>
           ) : (
-            <ImageUpload onUpload={(url) => setImageUrl(url)} />
+            // Updated to set 'image' state
+            <ImageUpload onUpload={(url) => setImage(url)} />
           )}
         </div>
 
