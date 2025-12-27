@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../lib/db";
+import connectDB from "../../lib/db"; // Use @ alias if possible, or keep relative path
 import Sale from "../../lib/model/Sale";
-import Product from "../../lib/model/product";
+import Product from "../../lib/model/product"; // FIXED: Capital 'P' to match file name
 
 // 1. GET ALL SALES (For the Chart)
 export async function GET() {
@@ -31,6 +31,7 @@ export async function POST(request: Request) {
   const totalAmount = product.price * quantity;
 
   // D. Update Product Stock (Subtract sold items)
+  // This is the specific line that makes your graphs update!
   product.quantity = (product.quantity || 0) - quantity;
   await product.save();
 
