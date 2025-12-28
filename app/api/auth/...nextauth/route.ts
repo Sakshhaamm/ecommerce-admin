@@ -10,8 +10,7 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // HARDCODED ADMIN USER
-        // You can change "admin" and "admin123" to whatever you want
+        // HARDCODED ADMIN FOR NOW
         if (
           credentials?.username === "admin" && 
           credentials?.password === "admin123" 
@@ -24,8 +23,9 @@ const handler = NextAuth({
   ],
   pages: {
     signIn: '/login', // Redirect here if not logged in
+    error: '/login',  // <--- ADD THIS LINE (Redirect errors back to login instead of 404)
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET, // Ensure this reads the environment variable
 });
 
 export { handler as GET, handler as POST };
