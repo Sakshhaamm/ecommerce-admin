@@ -5,51 +5,70 @@ import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    
-    // 1. Alert the user that we are starting
-    alert("Step 1: Starting Login...");
+    setError(null);
 
-    try {
-      const result = await signIn("credentials", {
-        username: "admin", // We hardcode these to test connectivity first
-        password: "admin123",
-        redirect: false,
-      });
+    const formData = new FormData(e.currentTarget);
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
 
-      // 2. Alert the result from the server
-      alert("Step 2: Server said: " + JSON.stringify(result));
+    const result = await signIn("credentials", {
+      username,
+      password,
+      redirect: false, // 🔑 CRITICAL
+    });
 
-      if (result?.error) {
-        alert("❌ Login Failed: " + result.error);
-        setLoading(false);
-      } else {
-        alert("✅ Login Success! Forcing Redirect now...");
-        // 3. FORCE reload to the homepage
-        window.location.href = "/";
-      }
-    } catch (err) {
-      alert("🔥 CRASH: " + err);
+    setLoading(false);
+
+    if (result?.error) {
+      setError("Invalid admin credentials");
+      return;
     }
+
+    // ✅ FULL PAGE RELOAD — guarantees cookie is available to middleware
+    window.location.href = "/";
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-red-900">
-      <div className="bg-white p-8 rounded w-96 text-center">
-        <h1 className="text-2xl font-bold mb-4 text-black">TEST MODE</h1>
-        <p className="mb-4 text-red-600 font-bold">
-           (Hardcoded: admin / admin123)
-        </p>
-        <button 
-          onClick={handleSubmit}
-          className="w-full bg-red-600 text-white p-4 rounded font-bold text-xl hover:bg-red-700"
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded shadow w-80"
+      >
+        <h1 className="text-xl font-bold mb-4 text-center">Admin Login</h1>
+
+        {error && (
+          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
+        )}
+
+        <input
+          name="username"
+          type="text"
+          placeholder="Username"
+          required
+          className="border p-2 w-full mb-3 rounded"
+        />
+
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          required
+          className="border p-2 w-full mb-4 rounded"
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-black text-white w-full py-2 rounded disabled:opacity-60"
         >
-          CLICK ME TO LOGIN
+          {loading ? "Signing in..." : "Login"}
         </button>
-      </div>
+      </form>
     </div>
   );
 }
