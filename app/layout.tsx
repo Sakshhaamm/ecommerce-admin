@@ -18,15 +18,18 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-gray-50 dark:bg-slate-900 text-slate-900 dark:text-gray-100 transition-colors duration-300`}>
         <Providers>
-          {/* We add a simple layout wrapper here */}
+          {/* Layout Wrapper */}
           <div className="min-h-screen flex flex-col md:flex-row">
-            {/* Sidebar (Simple placeholder if you don't have a separate file) */}
+            
+            {/* Sidebar */}
             <aside className="w-full md:w-64 bg-slate-800 text-white p-6 md:min-h-screen flex-shrink-0">
                <h1 className="text-2xl font-bold mb-8">AdminPanel</h1>
                <nav className="space-y-4">
                  <a href="/" className="block py-2 hover:text-blue-400">Dashboard</a>
                  <a href="/products" className="block py-2 hover:text-blue-400">Inventory</a>
                  <a href="/add-product" className="block py-2 hover:text-blue-400">Add Product</a>
+                 {/* ADDED SALES LINK HERE */}
+                 <a href="/sales" className="block py-2 hover:text-blue-400">Sales</a>
                </nav>
             </aside>
 
