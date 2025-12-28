@@ -16,41 +16,42 @@ export default function LoginPage() {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
 
-    const result = await signIn("credentials", {
+    const res = await signIn("credentials", {
       username,
       password,
-      redirect: false, // 🔑 CRITICAL
+      redirect: false,
     });
 
     setLoading(false);
 
-    if (result?.error) {
+    if (res?.error) {
       setError("Invalid admin credentials");
       return;
     }
 
-    // ✅ FULL PAGE RELOAD — guarantees cookie is available to middleware
+    // ✅ FULL reload so middleware sees cookie
     window.location.href = "/";
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-zinc-100">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow w-80"
+        className="w-80 bg-zinc-900 p-6 rounded-xl shadow-lg border border-zinc-800"
       >
-        <h1 className="text-xl font-bold mb-4 text-center">Admin Login</h1>
+        <h1 className="text-2xl font-semibold text-center mb-6">
+          Admin Login
+        </h1>
 
         {error && (
-          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
+          <p className="text-red-400 text-sm text-center mb-4">{error}</p>
         )}
 
         <input
           name="username"
-          type="text"
           placeholder="Username"
           required
-          className="border p-2 w-full mb-3 rounded"
+          className="w-full mb-3 px-3 py-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-white"
         />
 
         <input
@@ -58,13 +59,12 @@ export default function LoginPage() {
           type="password"
           placeholder="Password"
           required
-          className="border p-2 w-full mb-4 rounded"
+          className="w-full mb-5 px-3 py-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-white"
         />
 
         <button
-          type="submit"
           disabled={loading}
-          className="bg-black text-white w-full py-2 rounded disabled:opacity-60"
+          className="w-full py-2 rounded bg-white text-black font-medium hover:bg-zinc-200 transition disabled:opacity-60"
         >
           {loading ? "Signing in..." : "Login"}
         </button>
