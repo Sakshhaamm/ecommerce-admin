@@ -1,5 +1,11 @@
-export { default } from "next-auth/middleware";
+import { withAuth } from "next-auth/middleware";
 
-// Define which pages to protect
-// This protects home (/), products, add-product, and sales
-export const config = { matcher: ["/", "/products/:path*", "/add-product", "/sales"] };
+export default withAuth({
+  pages: {
+    signIn: "/login",
+  },
+});
+
+export const config = { 
+  matcher: ["/", "/products/:path*", "/add-product", "/sales"] 
+};
