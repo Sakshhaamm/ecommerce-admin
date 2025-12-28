@@ -1,7 +1,7 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -9,52 +9,47 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
-    // We let NextAuth handle the redirect automatically
-    // This is much more reliable than doing it manually
-    await signIn("credentials", {
-      username: (e.target as any).username.value,
-      password: (e.target as any).password.value,
-      redirect: true,  // <--- ENABLE AUTO REDIRECT
-      callbackUrl: "/", // <--- GO HERE AFTER LOGIN
-    });
     
-    // We don't need code here because the page will navigate away automatically
+    // 1. Alert the user that we are starting
+    alert("Step 1: Starting Login...");
+
+    try {
+      const result = await signIn("credentials", {
+        username: "admin", // We hardcode these to test connectivity first
+        password: "admin123",
+        redirect: false,
+      });
+
+      // 2. Alert the result from the server
+      alert("Step 2: Server said: " + JSON.stringify(result));
+
+      if (result?.error) {
+        alert("❌ Login Failed: " + result.error);
+        setLoading(false);
+      } else {
+        alert("✅ Login Success! Forcing Redirect now...");
+        // 3. FORCE reload to the homepage
+        window.location.href = "/";
+      }
+    } catch (err) {
+      alert("🔥 CRASH: " + err);
+    }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-900">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h1 className="text-2xl font-bold mb-6 text-center text-slate-800">Admin Panel</h1>
-        
-        <label className="block mb-2 text-sm font-bold text-slate-700">Username</label>
-        <input 
-          name="username" // Added name attribute for easier access
-          type="text" 
-          defaultValue=""
-          className="w-full p-3 border rounded mb-4 text-slate-900 bg-gray-50 focus:outline-blue-500"
-          placeholder="admin"
-          required
-        />
-
-        <label className="block mb-2 text-sm font-bold text-slate-700">Password</label>
-        <input 
-          name="password" // Added name attribute
-          type="password" 
-          defaultValue=""
-          className="w-full p-3 border rounded mb-6 text-slate-900 bg-gray-50 focus:outline-blue-500"
-          placeholder="••••••"
-          required
-        />
-
+    <div className="flex h-screen items-center justify-center bg-red-900">
+      <div className="bg-white p-8 rounded w-96 text-center">
+        <h1 className="text-2xl font-bold mb-4 text-black">TEST MODE</h1>
+        <p className="mb-4 text-red-600 font-bold">
+           (Hardcoded: admin / admin123)
+        </p>
         <button 
-          type="submit" // Explicitly set type to submit
-          disabled={loading}
-          className={`w-full text-white p-3 rounded font-bold transition ${loading ? 'bg-gray-500 cursor-wait' : 'bg-blue-600 hover:bg-blue-700'}`}
+          onClick={handleSubmit}
+          className="w-full bg-red-600 text-white p-4 rounded font-bold text-xl hover:bg-red-700"
         >
-          {loading ? "Logging in..." : "Login"}
+          CLICK ME TO LOGIN
         </button>
-      </form>
+      </div>
     </div>
   );
 }
