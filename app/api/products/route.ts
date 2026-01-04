@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   try {
     await connectDB();
     const body = await request.json();
-    
+
     // This handles both "Add" (POST) and "Edit" (PUT) logic if you send an ID
     const productData = {
       name: body.name || body.productName, // Handles both naming conventions
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       price: Number(body.price),
       quantity: Number(body.quantity),
       description: body.description,
-      image: body.image,
+      imageUrl: body.image || body.imageUrl, // Handle both for safety
     };
 
     const newProduct = await Product.create(productData);

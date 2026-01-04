@@ -5,19 +5,19 @@ import ProductChart from "./components/ProductChart";
 import SalesChart from "./components/SalesChart";
 import CategoryPieChart from "./components/CategoryPieChart";
 import TopProductsChart from "./components/TopProductsChart";
-import ThemeToggle from "./components/ThemeToggle";
+// import ThemeToggle from "./components/ThemeToggle";
 
 // Force dynamic ensures the page always rebuilds on refresh
-export const dynamic = "force-dynamic"; 
+export const dynamic = "force-dynamic";
 
 async function getData() {
   await connectDB();
-  
-  const products = await Product.find({}).lean(); 
-  const sales = await Sale.find({}).lean(); 
-  
+
+  const products = await Product.find({}).lean();
+  const sales = await Sale.find({}).lean();
+
   const totalProducts = products.length;
-  
+
   const totalValue = products.reduce((sum: number, product: any) => {
     return sum + (product.price * (product.quantity || 0));
   }, 0);
@@ -34,7 +34,7 @@ async function getData() {
     // ADD QUANTITY instead of adding 1
     categoryMap[cat] = (categoryMap[cat] || 0) + (p.quantity || 0);
   });
-  
+
   const categoryData = Object.keys(categoryMap).map(key => ({
     name: key,
     value: categoryMap[key]
@@ -52,38 +52,46 @@ async function getData() {
     .slice(0, 5);
 
   // --- 3. Monthly Sales Data ---
-  const monthlyData: Record<string, number> = {};
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  monthNames.forEach(m => monthlyData[m] = 0);
+  const salesMapByMonth: Record<string, number> = {};
 
   sales.forEach((sale: any) => {
     const date = new Date(sale.date);
-    const monthIndex = date.getMonth(); 
-    const monthName = monthNames[monthIndex];
-    monthlyData[monthName] += sale.amount;
+    // Create a key like "2023-01" for proper sorting
+    const yearMonthKey = date.toISOString().slice(0, 7);
+    salesMapByMonth[yearMonthKey] = (salesMapByMonth[yearMonthKey] || 0) + sale.amount;
   });
 
-  const salesChartData = monthNames.map(name => ({
-    name,
-    sales: monthlyData[name]
-  }));
+  // Sort keys (YYYY-MM) first to ensure chronological order
+  const sortedKeys = Object.keys(salesMapByMonth).sort();
 
-  return { 
-    products, 
-    totalProducts, 
-    totalValue, 
-    totalStockItems, 
-    categoryData, 
+  const salesChartData = sortedKeys.map(key => {
+    // Convert "2023-01" -> "Jan 23"
+    const [year, month] = key.split('-');
+    const dateObj = new Date(parseInt(year), parseInt(month) - 1);
+    const name = dateObj.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+
+    return {
+      name, // "Jan 23"
+      sales: salesMapByMonth[key]
+    };
+  });
+
+  return {
+    products,
+    totalProducts,
+    totalValue,
+    totalStockItems,
+    categoryData,
     topProductsData,
-    salesChartData 
+    salesChartData
   };
 }
 
 export default async function Home() {
-  const { 
-    products, 
-    totalProducts, 
-    totalValue, 
+  const {
+    products,
+    totalProducts,
+    totalValue,
     totalStockItems,
     categoryData,
     topProductsData,
@@ -92,11 +100,11 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen pb-20 transition-colors">
-      
+
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Dashboard Overview</h1>
-        <ThemeToggle />
+        {/* ThemeToggle removed as per request */}
       </div>
 
       {/* Metrics Cards */}

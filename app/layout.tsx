@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Providers } from "./providers"; // Import the provider
+import LogoutBtn from "./components/LogoutBtn";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,22 +21,25 @@ export default function RootLayout({
         <Providers>
           {/* Layout Wrapper */}
           <div className="min-h-screen flex flex-col md:flex-row">
-            
+
             {/* Sidebar */}
             <aside className="w-full md:w-64 bg-slate-800 text-white p-6 md:min-h-screen flex-shrink-0">
-               <h1 className="text-2xl font-bold mb-8">AdminPanel</h1>
-               <nav className="space-y-4">
-                 <a href="/" className="block py-2 hover:text-blue-400">Dashboard</a>
-                 <a href="/products" className="block py-2 hover:text-blue-400">Inventory</a>
-                 <a href="/add-product" className="block py-2 hover:text-blue-400">Add Product</a>
-                 {/* ADDED SALES LINK HERE */}
-                 <a href="/sales" className="block py-2 hover:text-blue-400">Sales</a>
-               </nav>
+              <h1 className="text-2xl font-bold mb-8">AdminPanel</h1>
+              <nav className="space-y-4">
+                <a href="/" className="block py-2 hover:text-blue-400">Dashboard</a>
+                <a href="/products" className="block py-2 hover:text-blue-400">Inventory</a>
+                <a href="/add-product" className="block py-2 hover:text-blue-400">Add Product</a>
+                {/* ADDED SALES LINK HERE */}
+                <a href="/sales" className="block py-2 hover:text-blue-400">Sales</a>
+                <div className="border-t border-slate-700 my-2 pt-2">
+                  <LogoutBtn />
+                </div>
+              </nav>
             </aside>
 
             {/* Main Content Area */}
             <main className="flex-1 p-6 md:p-10 overflow-y-auto">
-               {children}
+              {children}
             </main>
           </div>
         </Providers>
