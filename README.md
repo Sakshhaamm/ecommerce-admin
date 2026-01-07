@@ -2,6 +2,17 @@
 
 A robust, server-side rendered (SSR) Admin Dashboard built with **Next.js 14 (App Router)**. This application serves as a centralized control center for e-commerce management, allowing administrators to track sales, manage inventory, and secure access via authenticated routes.
 
+### 🌐 Live Project & Submission Links
+
+* 🔗 **Live Deployment:** https://ecommerce-admin-56n2.vercel.app/
+* 🔗 **Demo Video:** https://drive.google.com/drive/folders/1-xmXh8JRYLfzKA28-Jt7ijWdl_nJue3t?usp=sharing
+
+### 🔐 Demo Admin Credentials
+
+*Use these credentials to access the dashboard during review:*
+
+> **Username:** `admin`
+> **Password:** `admin123`
 ## 🚀 Key Features
 
 * **🔐 Secure Authentication:**
@@ -31,15 +42,6 @@ A robust, server-side rendered (SSR) Admin Dashboard built with **Next.js 14 (Ap
 * **Database:** MongoDB (Mongoose)
 * **Authentication:** NextAuth.js
 * **Deployment:** Vercel
-
----
-
-## 🔑 Admin Credentials
-
-To access the live dashboard or local environment, use the following credentials:
-
-* **Username:** `admin`
-* **Password:** `admin123`
 
 ---
 
